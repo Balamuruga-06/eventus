@@ -1,11 +1,15 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import {View,Text,TextInput,StyleSheet, Platform,TouchableOpacity,Dimensions,StatusBar} from 'react-native';
 import { Button } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable'; 
 import { FontAwesome } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons'; 
+import axios from 'axios';
+import {AuthContext} from '../context/AuthContext'
+
 const SignInScreen = ({navigation}) => {
 
+    const {signin} = useContext(AuthContext);
     const [data,setData] = React.useState({
         email:'',
         password:'',
@@ -42,8 +46,13 @@ const SignInScreen = ({navigation}) => {
             secureTextEntry:!data.secureTextEntry
         })
     }
-
-
+    const login = () => {
+        
+           signin(data);          
+        // console.log('data:  ', data)
+             
+    }
+    
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor='#009387' barStyle="light-content"/>
@@ -120,7 +129,7 @@ const SignInScreen = ({navigation}) => {
                         mode="contained"  
                         style={styles.signIn} 
                         color="#009387"
-                        onPress={()=>navigation.navigate('SignIn')}
+                        onPress={()=>login()}
                     >
                     Sign In
                     </Button>

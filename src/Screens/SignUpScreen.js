@@ -1,17 +1,29 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import {View,Text,TextInput,StyleSheet, Platform,TouchableOpacity,Dimensions,StatusBar} from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button,Snackbar } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable'; 
 import { FontAwesome } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons'; 
+import axios from 'axios';
+import {AuthContext} from '../context/AuthContext'
 const SignUpScreen = ({navigation}) => {
+
+    const {signup} = useContext(AuthContext);
 
     const [data,setData] = React.useState({
         email:'',
         password:'',
         check_textInputChange:false,
         secureTextEntry:true
-    });
+    });    
+    
+    const [visible, setVisible] = React.useState(false);
+
+    const onToggleSnackBar = () => setVisible(!visible);
+
+    const onDismissSnackBar = () => setVisible(false);
+
+    const [message,setMessage] = React.useState('');
 
     const textInputChange = (val) => {
         if(val.length != 0){
@@ -19,7 +31,7 @@ const SignUpScreen = ({navigation}) => {
                 ...data,
                 email:val,
                 check_textInputChange:true
-            })
+            })            
         }else{
             setData({
                 ...data,
@@ -41,6 +53,10 @@ const SignUpScreen = ({navigation}) => {
             ...data,
             secureTextEntry:!data.secureTextEntry
         })
+    }
+
+    const submitEvent = () =>{        
+        signup(data,navigation);                
     }
 
 
@@ -154,7 +170,7 @@ const SignUpScreen = ({navigation}) => {
                         mode="contained"  
                         style={styles.signIn} 
                         color="#009387"
-                        onPress={()=>navigation.navigate('SignIn')}
+                        onPress={()=> submitEvent()}
                     >
                     Sign up
                     </Button>
@@ -176,6 +192,14 @@ const SignUpScreen = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
             </Animatable.View>
+            <Snackbar
+                visible={visible}
+                onDismiss={onDismissSnackBar}
+                action={{
+                label: 'Undo',
+                }}>
+                {message}
+            </Snackbar>
         </View>
     );
 }
